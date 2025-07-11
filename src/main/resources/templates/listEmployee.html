@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body class="container mt-4">
+<h2 class="mb-4">Danh sách nhân viên</h2>
+
+<form th:action="@{/employees}" method="get" class="row g-3 mb-3">
+    <div class="col-auto">
+        <input type="text" name="phoneSearch" class="form-control" placeholder="Tìm số điện thoại"
+               th:value="${phoneSearch}">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+    </div>
+    <div class="col-auto">
+        <a class="btn btn-success" th:href="@{/employees/add-employee}">+ Thêm nhân viên</a>
+    </div>
+</form>
+
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <th>
+            <a th:href="@{/employees(sortBy='name', direction=${direction == 'asc' ? 'desc' : 'asc'}, phoneSearch=${phoneSearch})}">
+                Tên
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/employees(sortBy='email', direction=${direction == 'asc' ? 'desc' : 'asc'}, phoneSearch=${phoneSearch})}">
+                Email
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/employees(sortBy='phoneNumber', direction=${direction == 'asc' ? 'desc' : 'asc'}, phoneSearch=${phoneSearch})}">
+                SĐT
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/employees(sortBy='salary', direction=${direction == 'asc' ? 'desc' : 'asc'}, phoneSearch=${phoneSearch})}">
+                Lương
+            </a>
+        </th>
+        <th>Thao tác</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="emp : ${employees.content}">
+        <td th:text="${emp.name}"></td>
+        <td th:text="${emp.email}"></td>
+        <td th:text="${emp.phoneNumber}"></td>
+        <td th:text="${emp.salary}"></td>
+        <td>
+            <a class="btn btn-sm btn-warning" th:href="@{'/employees/edit-employee/' + ${emp.id}}">Sửa</a>
+            <a class="btn btn-sm btn-danger" th:href="@{'/employees/' + ${emp.id}}" onclick="return confirm('Xác nhận xóa?')">Xóa</a>
+        </td>
+    </tr>
+    <tr th:if="${employees.totalElements == 0}">
+        <td colspan="5" class="text-center">Không có nhân viên nào được tìm thấy.</td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="d-flex justify-content-between align-items-center">
+    <div>
+        Trang <span th:text="${employees.number + 1}"></span> / <span th:text="${employees.totalPages}"></span>
+    </div>
+
+    <div>
+        <nav>
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${employees.first} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/employees(page=${employees.number - 1}, sortBy=${sortBy}, direction=${direction}, phoneSearch=${phoneSearch})}">Trước</a>
+                </li>
+
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, employees.totalPages - 1)}"
+                    th:classappend="${i == employees.number} ? 'active'">
+                    <a class="page-link"
+                       th:href="@{/employees(page=${i}, sortBy=${sortBy}, direction=${direction}, phoneSearch=${phoneSearch})}"
+                       th:text="${i + 1}">1</a>
+                </li>
+
+                <li class="page-item" th:classappend="${employees.last} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/employees(page=${employees.number + 1}, sortBy=${sortBy}, direction=${direction}, phoneSearch=${phoneSearch})}">Sau</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+</body>
+</html>
